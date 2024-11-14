@@ -1,5 +1,8 @@
 [workspace]
-members = ["core"]
+members = [
+    "substreams-aelf-core",
+    "substreams-aelf",
+]
 
 [workspace.package]
 version = "0.1.0"
