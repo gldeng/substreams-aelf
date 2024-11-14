@@ -1,0 +1,21 @@
+[package]
+name = "substreams-aelf-core"
+version.workspace = true
+description.workspace = true
+edition.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+prost = { version = "0.13" }
+prost-types = "0.13"
+
+[build-dependencies]
+prost-build = "0.13"
+
+[dev-dependencies]
