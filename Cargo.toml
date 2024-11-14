@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "substreams-aelf-core",
+    "core",
     "substreams-aelf",
 ]
 
