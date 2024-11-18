@@ -358,6 +358,8 @@ pub struct FirehoseBlockBody {
     pub transactions: ::prost::alloc::vec::Vec<Transaction>,
     #[prost(message, repeated, tag="2")]
     pub trasanction_results: ::prost::alloc::vec::Vec<TransactionResult>,
+    #[prost(message, repeated, tag="3")]
+    pub transaction_traces: ::prost::alloc::vec::Vec<TransactionTrace>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
