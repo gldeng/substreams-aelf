@@ -1,8 +1,6 @@
-use bs58;
 use sha2::{Sha256, Digest};
 pub use substreams_aelf_core::pb;
 use substreams_aelf_core::pb::aelf::Address;
-use prost::Message;
 
 
 /// Decodes a base58 string with a checksum. Returns the decoded data without the checksum.
@@ -19,7 +17,7 @@ fn b58_to_address(b58_string: &str) -> Result<Address, String> {
     let (data, checksum) = bytes.split_at(bytes.len() - 4);
 
     // Calculate the checksum of the data
-    let computed_checksum = &Sha256::digest(&Sha256::digest(data))[..4];
+    let computed_checksum = &Sha256::digest(Sha256::digest(data))[..4];
 
     // Verify the checksum
     if checksum != computed_checksum {
