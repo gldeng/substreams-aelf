@@ -71,34 +71,34 @@ impl Hash {
     }
 }
 
-impl TransactionTrace {
-    pub fn is_successful(&self) -> bool {
-        if self.execution_status != ExecutionStatus::Executed.into() { return false; }
-        if self.pre_traces.iter().any(|trace| !trace.is_successful()) { return false; }
-        if self.inline_traces.iter().any(|trace| !trace.is_successful()) { return false; }
-        if self.post_traces.iter().any(|trace| !trace.is_successful()) { return false; }
-        return true;
-    }
-    pub fn iter_valid_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
-        if self.is_successful() {
-            return self.iter_state_changes();
-        }
-        Box::new(self.pre_traces.iter()
-            .chain(self.post_traces.iter())
-            .filter(|trace| trace.is_successful())
-            .flat_map(|trace| trace.iter_state_changes()))
-    }
-    pub fn iter_core_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
-        Box::new(vec![self.state_set.clone().unwrap_or_default()].into_iter())
-    }
-    pub fn iter_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
-        Box::new(self.pre_traces.iter().flat_map(|trace| trace.iter_state_changes())
-            .chain(self.iter_core_state_changes())
-            .chain(self.inline_traces.iter().flat_map(|trace| trace.iter_state_changes()))
-            .chain(self.post_traces.iter().flat_map(|trace| trace.iter_state_changes()))
-            .iter())
-    }
-}
+// impl TransactionTrace {
+//     pub fn is_successful(&self) -> bool {
+//         if self.execution_status != ExecutionStatus::Executed.into() { return false; }
+//         if self.pre_traces.iter().any(|trace| !trace.is_successful()) { return false; }
+//         if self.inline_traces.iter().any(|trace| !trace.is_successful()) { return false; }
+//         if self.post_traces.iter().any(|trace| !trace.is_successful()) { return false; }
+//         return true;
+//     }
+//     pub fn iter_valid_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
+//         if self.is_successful() {
+//             return self.iter_state_changes();
+//         }
+//         Box::new(self.pre_traces.iter()
+//             .chain(self.post_traces.iter())
+//             .filter(|trace| trace.is_successful())
+//             .flat_map(|trace| trace.iter_state_changes()))
+//     }
+//     pub fn iter_core_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
+//         Box::new(vec![self.state_set.clone().unwrap_or_default()].into_iter())
+//     }
+//     pub fn iter_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
+//         Box::new(self.pre_traces.iter().flat_map(|trace| trace.iter_state_changes())
+//             .chain(self.iter_core_state_changes())
+//             .chain(self.inline_traces.iter().flat_map(|trace| trace.iter_state_changes()))
+//             .chain(self.post_traces.iter().flat_map(|trace| trace.iter_state_changes()))
+//             .iter())
+//     }
+// }
 
 
 #[cfg(test)]
