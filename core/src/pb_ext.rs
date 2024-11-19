@@ -90,7 +90,7 @@ impl TransactionTrace {
     }
     pub fn iter_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
         Box::new(self.pre_traces.iter().flat_map(|trace| trace.iter_state_changes())
-            .chain(vec![self.state_set])
+            .chain(self.state_set.iter())
             .chain(self.inline_traces.iter().flat_map(|trace| trace.iter_state_changes()))
             .chain(self.post_traces.iter().flat_map(|trace| trace.iter_state_changes()))
             .iter())
