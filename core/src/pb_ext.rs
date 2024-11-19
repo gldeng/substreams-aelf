@@ -1,6 +1,9 @@
-use crate::pb::aelf::{Address, Hash};
+use std::iter::{Chain, Filter};
+use std::path::Iter;
+use crate::pb::aelf::{Address, ExecutionStatus, Hash, TransactionExecutingStateSet, TransactionTrace};
 use bs58;
 use sha2::{Sha256, Digest};
+use crate::pb::aelf::ExecutionStatus::Executed;
 
 impl Address {
     pub fn from_b58(b58: &str) -> Result<Self, String> {
@@ -33,13 +36,6 @@ impl Address {
 
         Ok(address)
     }
-}
-
-pub trait ToB58 {
-    fn to_b58(&self) -> String;
-}
-
-impl ToB58 for Address {
     fn to_b58(&self) -> String {
         // Calculate the checksum
         let hash = calc_sha256(self.value.as_slice());
@@ -72,6 +68,32 @@ impl Hash {
     }
     pub fn to_hex(&self) -> String {
         hex::encode(self.value.as_slice())
+    }
+}
+
+impl TransactionTrace {
+    pub fn is_successful(&self) -> bool {
+        if self.execution_status != ExecutionStatus::Executed.into() { return false; }
+        if self.pre_traces.iter().any(|trace| !trace.is_successful()) { return false; }
+        if self.inline_traces.iter().any(|trace| !trace.is_successful()) { return false; }
+        if self.post_traces.iter().any(|trace| !trace.is_successful()) { return false; }
+        return true;
+    }
+    pub fn iter_valid_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
+        if self.is_successful() {
+            return self.iter_state_changes();
+        }
+        self.pre_traces.iter_state_changes()
+            .chain(self.post_traces.iter_state_changes())
+            .filter(|trace| trace.is_successful())
+            .iter()
+    }
+    pub fn iter_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
+        self.pre_traces.iter_state_changes()
+            .chain(vec![self.state_set])
+            .chain(self.inline_traces.iter_state_changes())
+            .chain(self.post_traces.iter_state_changes())
+            .iter()
     }
 }
 
