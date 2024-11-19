@@ -33,10 +33,17 @@ impl Address {
 
         Ok(address)
     }
-    pub fn to_b58(&self) -> String {
+}
+
+pub trait ToB58 {
+    fn to_b58(&self) -> String;
+}
+
+impl ToB58 for Address {
+    fn to_b58(&self) -> String {
         // Calculate the checksum
-        let hash = Self::sha256(self.value.as_slice());
-        let hash = Self::sha256(hash.as_slice());
+        let hash = calc_sha256(self.value.as_slice());
+        let hash = calc_sha256(hash.as_slice());
         let checksum = &hash[..4]; // Use the first 4 bytes as the checksum
 
         // Append the checksum to the value
@@ -46,12 +53,14 @@ impl Address {
         // Encode the data with checksum
         bs58::encode(data_with_checksum).into_string()
     }
-    fn sha256(bytes: &[u8]) -> Vec<u8> {
-        let mut hasher = Sha256::new();
-        hasher.update(bytes);
-        hasher.finalize().to_vec()
-    }
 }
+
+fn calc_sha256(bytes: &[u8]) -> Vec<u8> {
+    let mut hasher = Sha256::new();
+    hasher.update(bytes);
+    hasher.finalize().to_vec()
+}
+
 
 impl Hash {
     pub fn from_hex(hex_string: &str) -> Result<Self, String> {
