@@ -1,2 +1,2 @@
 pub mod pb;
-mod pb_ext;
+pub mod pb_ext;
