@@ -88,9 +88,12 @@ impl TransactionTrace {
             .filter(|trace| trace.is_successful())
             .flat_map(|trace| trace.iter_state_changes()))
     }
+    pub fn iter_core_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
+        Box::new(self.state_set.iter())
+    }
     pub fn iter_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
         Box::new(self.pre_traces.iter().flat_map(|trace| trace.iter_state_changes())
-            .chain(self.state_set.iter())
+            .chain(self.iter_core_state_changes())
             .chain(self.inline_traces.iter().flat_map(|trace| trace.iter_state_changes()))
             .chain(self.post_traces.iter().flat_map(|trace| trace.iter_state_changes()))
             .iter())
