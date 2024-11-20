@@ -36,7 +36,7 @@ impl Address {
 
         Ok(address)
     }
-    fn to_b58(&self) -> String {
+    pub fn to_b58(&self) -> String {
         // Calculate the checksum
         let hash = calc_sha256(self.value.as_slice());
         let hash = calc_sha256(hash.as_slice());
