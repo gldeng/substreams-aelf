@@ -61,6 +61,8 @@ pub struct Call {
     pub state_set: ::core::option::Option<TransactionExecutingStateSet>,
     #[prost(message, repeated, tag="13")]
     pub logs: ::prost::alloc::vec::Vec<LogEvent>,
+    #[prost(bool, tag="14")]
+    pub is_reverted: bool,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
