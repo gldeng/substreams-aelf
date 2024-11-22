@@ -1,11 +1,7 @@
-use std::iter::{Chain, Filter};
-use std::path::Iter;
-use crate::pb::aelf::{Address, ExecutionStatus, Hash, TransactionExecutingStateSet, TransactionTrace};
-use bs58;
 use sha2::{Sha256, Digest};
-use crate::pb::aelf::ExecutionStatus::Executed;
+use crate::pb::aelf as pb;
 
-impl Address {
+impl pb::Address {
     pub fn from_b58(b58: &str) -> Result<Self, String> {
         // Decode the base58 string to bytes
         let bytes = bs58::decode(b58).into_vec().map_err(|e| format!("Base58 decoding error: {:?}", e))?;
@@ -30,7 +26,7 @@ impl Address {
             return Err("Invalid address".to_string());
         }
 
-        let address = Address {
+        let address = Self {
             value: data.to_vec()
         };
 
@@ -38,8 +34,8 @@ impl Address {
     }
     pub fn to_b58(&self) -> String {
         // Calculate the checksum
-        let hash = calc_sha256(self.value.as_slice());
-        let hash = calc_sha256(hash.as_slice());
+        let hash = Self::calc_sha256(self.value.as_slice());
+        let hash = Self::calc_sha256(hash.as_slice());
         let checksum = &hash[..4]; // Use the first 4 bytes as the checksum
 
         // Append the checksum to the value
@@ -49,61 +45,29 @@ impl Address {
         // Encode the data with checksum
         bs58::encode(data_with_checksum).into_string()
     }
+    fn calc_sha256(bytes: &[u8]) -> Vec<u8> {
+        let mut hasher = Sha256::new();
+        hasher.update(bytes);
+        hasher.finalize().to_vec()
+    }
 }
 
-fn calc_sha256(bytes: &[u8]) -> Vec<u8> {
-    let mut hasher = Sha256::new();
-    hasher.update(bytes);
-    hasher.finalize().to_vec()
-}
-
-
-impl Hash {
+impl pb::Hash {
     pub fn from_hex(hex_string: &str) -> Result<Self, String> {
         let bytes = hex::decode(hex_string).map_err(|e| format!("Hex decoding error: {:?}", e))?;
         if bytes.len() != 32 {
             return Err("Invalid hash".to_string());
         }
-        Ok(Hash { value: bytes })
+        Ok(Self { value: bytes })
     }
     pub fn to_hex(&self) -> String {
         hex::encode(self.value.as_slice())
     }
 }
 
-// impl TransactionTrace {
-//     pub fn is_successful(&self) -> bool {
-//         if self.execution_status != ExecutionStatus::Executed.into() { return false; }
-//         if self.pre_traces.iter().any(|trace| !trace.is_successful()) { return false; }
-//         if self.inline_traces.iter().any(|trace| !trace.is_successful()) { return false; }
-//         if self.post_traces.iter().any(|trace| !trace.is_successful()) { return false; }
-//         return true;
-//     }
-//     pub fn iter_valid_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
-//         if self.is_successful() {
-//             return self.iter_state_changes();
-//         }
-//         Box::new(self.pre_traces.iter()
-//             .chain(self.post_traces.iter())
-//             .filter(|trace| trace.is_successful())
-//             .flat_map(|trace| trace.iter_state_changes()))
-//     }
-//     pub fn iter_core_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
-//         Box::new(vec![self.state_set.clone().unwrap_or_default()].into_iter())
-//     }
-//     pub fn iter_state_changes(&self) -> Box<dyn Iterator<Item=TransactionExecutingStateSet>> {
-//         Box::new(self.pre_traces.iter().flat_map(|trace| trace.iter_state_changes())
-//             .chain(self.iter_core_state_changes())
-//             .chain(self.inline_traces.iter().flat_map(|trace| trace.iter_state_changes()))
-//             .chain(self.post_traces.iter().flat_map(|trace| trace.iter_state_changes()))
-//             .iter())
-//     }
-// }
-
-
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::{Address, Hash};
 
     #[test]
     fn test_address() {

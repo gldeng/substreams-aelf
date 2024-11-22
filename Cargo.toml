@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "aelf-types",
     "core",
     "substreams-aelf",
 ]
@@ -17,5 +18,6 @@ categories = ["api-bindings", "external-ffi-bindings", "wasm"]
 rust-version = "1.60"
 
 [workspace.dependencies]
+aelf-types = { path = "./aelf-types" }
 substreams-aelf = { path = "./substreams-aelf" }
 substreams-aelf-core = { path = "./core" }

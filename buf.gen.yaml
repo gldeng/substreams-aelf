@@ -10,3 +10,4 @@ plugins:
   out: ./core/src/pb
   opt:
     - no_features
+    - include_files=generated.rs

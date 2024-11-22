@@ -21,7 +21,7 @@ pub struct Transaction {
     /// The parameters to pass to the smart contract method.
     #[prost(bytes="vec", tag="6")]
     pub params: ::prost::alloc::vec::Vec<u8>,
-    /// When signing a transaction it’s actually a subset of the fields: from/to and the target method as well as 
+    /// When signing a transaction it’s actually a subset of the fields: from/to and the target method as well as
     /// the parameter that were given. It also contains the reference block number and prefix.
     #[prost(bytes="vec", tag="10000")]
     pub signature: ::prost::alloc::vec::Vec<u8>,
@@ -55,8 +55,8 @@ pub struct TransactionResult {
     /// The log events.
     #[prost(message, repeated, tag="3")]
     pub logs: ::prost::alloc::vec::Vec<LogEvent>,
-    /// Bloom filter for transaction logs. A transaction log event can be defined in the contract and stored 
-    /// in the bloom filter after the transaction is executed. Through this filter, we can quickly search for 
+    /// Bloom filter for transaction logs. A transaction log event can be defined in the contract and stored
+    /// in the bloom filter after the transaction is executed. Through this filter, we can quickly search for
     /// and determine whether a log exists in the transaction result.
     #[prost(bytes="vec", tag="4")]
     pub bloom: ::prost::alloc::vec::Vec<u8>,
