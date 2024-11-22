@@ -3,7 +3,6 @@ mod extensions;
 
 pub use pb::aelf::Address;
 pub use pb::aelf::Hash;
-pub use extensions::*;
 
 
 #[macro_export]
