@@ -1,8 +1,7 @@
 mod pb;
 mod extensions;
 
-pub use pb::aelf::Address;
-pub use pb::aelf::Hash;
+pub use pb::aelf::*;
 
 
 #[macro_export]
