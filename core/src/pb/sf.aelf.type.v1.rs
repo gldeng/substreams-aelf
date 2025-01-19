@@ -27,6 +27,8 @@ pub struct TransactionTrace {
     pub calls: ::prost::alloc::vec::Vec<Call>,
     #[prost(int32, tag="5")]
     pub main_call_index: i32,
+    #[prost(map="string, bytes", tag="6")]
+    pub initial_state_values: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::vec::Vec<u8>>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
