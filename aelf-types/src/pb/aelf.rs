@@ -353,6 +353,12 @@ pub struct BlockHeader {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct StateSet {
+    #[prost(map="string, bytes", tag="1")]
+    pub values: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::vec::Vec<u8>>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FirehoseBlockBody {
     #[prost(message, repeated, tag="1")]
     pub transactions: ::prost::alloc::vec::Vec<Transaction>,
@@ -360,6 +366,8 @@ pub struct FirehoseBlockBody {
     pub trasanction_results: ::prost::alloc::vec::Vec<TransactionResult>,
     #[prost(message, repeated, tag="3")]
     pub transaction_traces: ::prost::alloc::vec::Vec<TransactionTrace>,
+    #[prost(message, repeated, tag="4")]
+    pub initial_states: ::prost::alloc::vec::Vec<StateSet>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
